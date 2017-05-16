@@ -1,29 +1,31 @@
-//HC-12 Momentary Button Send
-//Autor Tom Heylen tomtomheylen.com
-
+//HC-12 Button Send
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(2, 3); //RX, TX
+SoftwareSerial hc_srl(2, 3); //RX, TX
 
-int buttonPin = 8;
-boolean onOff = 0;
+const byte BTN_PIN = 8;
+
 void setup() {
-  pinMode(buttonPin, INPUT);
-  mySerial.begin(9600);
+  pinMode(BTN_PIN, INPUT);
+  hc_srl.begin(9600);
+
+  Serial.begin(9600);
+  
+  pinMode(10, OUTPUT);
+  digitalWrite(10, HIGH);
 }
 
 void loop() {
- 
-  int buttonState = digitalRead(buttonPin);//read button state
+  byte btn_state = digitalRead(BTN_PIN);
   
-  if(buttonState == 1){//if button is down
-    mySerial.println(1111);//send unique code to the receiver to turn on. In this case 1111
-    onOff = 1;//set boolean to 1
+  if (btn_state == 1) {
+    hc_srl.println(1111);
   }
-  if(buttonState == 0 && onOff == 1){//Verifier to send off signal once
-    mySerial.println(0000);//send unique code to the receiver to turn off. In this case 0000
+  if (btn_state == 0 ) {
+    hc_srl.println(0000);
   }
-  delay(20);//delay little for better serial communication
+  //delay little for better serial communication
+  delay(20);
 }
 
