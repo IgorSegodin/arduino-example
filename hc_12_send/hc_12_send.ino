@@ -2,7 +2,7 @@
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial hc_srl(2, 3); //RX, TX
+SoftwareSerial hc_srl(2, 3); // RX, TX
 
 const byte BTN_PIN = 8;
 
@@ -18,14 +18,11 @@ void setup() {
 
 void loop() {
   byte btn_state = digitalRead(BTN_PIN);
-  
   if (btn_state == 1) {
-    hc_srl.println(1111);
+    Serial.println("send");
+    hc_srl.println(5);
   }
-  if (btn_state == 0 ) {
-    hc_srl.println(0000);
-  }
-  //delay little for better serial communication
+  // delay little for better serial communication
   delay(20);
 }
 
