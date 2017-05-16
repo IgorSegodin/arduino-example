@@ -6,6 +6,10 @@ SoftwareSerial hc_srl(2, 3); // RX, TX
 
 const byte BTN_PIN = 8;
 
+byte SGL_DELAY_MILLIS = 20;
+
+volatile unsigned long led_sgl_millis = 0;
+
 void setup() {
   pinMode(BTN_PIN, INPUT);
   hc_srl.begin(9600);
@@ -18,11 +22,13 @@ void setup() {
 
 void loop() {
   byte btn_state = digitalRead(BTN_PIN);
-  if (btn_state == 1) {
-    Serial.println("send");
-    hc_srl.println(5);
+  unsigned long elapsed = millis() - led_sgl_millis;
+  
+  if (btn_state == 1 && elapsed > SGL_DELAY_MILLIS) {
+    led_sgl_millis = millis();
+    hc_srl.write('5');
   }
   // delay little for better serial communication
-  delay(20);
+  //delay(20);
 }
 

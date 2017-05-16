@@ -4,11 +4,13 @@
 
 SoftwareSerial hc_srl(2, 3); // RX, TX
 
-byte LED_PIN = 12;
+const byte LED_PIN = 12;
 
-long unsigned led_sgl_millis = 0;
+volatile unsigned long led_sgl_millis = 0;
 
-byte SGL_DELAY_MILLIS = 30;
+const byte SGL_DELAY_MILLIS = 80;
+
+byte led_state = 0;
 
 void setup() {
   hc_srl.begin(9600);
@@ -18,26 +20,28 @@ void setup() {
 }
 
 void loop() {
-  if (hc_srl.available() > 1) {
-    int input = hc_srl.parseInt();
-    if (input == 5) {
+  if (hc_srl.available() > 0) {
+    char input = hc_srl.read();
+    if (input == '5') {
       led_sgl_millis = millis();
-      Serial.println("receive");
     }
   }
-  // clear the serial buffer for unwanted inputs
-  hc_srl.flush();
 
-  if (millis() - led_sgl_millis < SGL_DELAY_MILLIS) {
-    Serial.println("enable");
-    digitalWrite(LED_PIN, HIGH);
+  unsigned long elapsed = millis() - led_sgl_millis;
+
+  if (elapsed < SGL_DELAY_MILLIS) {
+    if (led_state != 1) {
+      digitalWrite(LED_PIN, HIGH);
+      led_state = 1;
+    }
   } else {
-    Serial.println("disable");
-    digitalWrite(LED_PIN, LOW);
+    if (led_state != 0) {
+      digitalWrite(LED_PIN, LOW);
+      led_state = 0;
+    }
   }
   
-  
   // delay little for better serial communication
-  delay(20);
+  //delay(20);
 }
 
