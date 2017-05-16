@@ -1,32 +1,33 @@
-//HC-12 Momentary Button Receive
-//Autor Tom Heylen tomtomheylen.com
+//HC-12 Button Receive
 
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(2, 3); // RX, TX
+SoftwareSerial hc_srl(2, 3); // RX, TX
 
-int ledPin = 13;
+byte LED_PIN = 12;
 
 void setup() {
-  mySerial.begin(9600);
-  pinMode(ledPin, OUTPUT);
+  hc_srl.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
 }
 
 void loop() {
    
-  if(mySerial.available() > 1){    
-    int input = mySerial.parseInt();//read serial input and convert to integer (-32,768 to 32,767)    
-    if(input == 1111){//if on code is received
-      digitalWrite(ledPin, HIGH);//turn LED on
+  if(hc_srl.available() > 1){    
+    int input = hc_srl.parseInt();
+    if (input == 1111) {
+      digitalWrite(LED_PIN, HIGH);
     }
-    if(input == 0000){//if off code is received
-      digitalWrite(ledPin, LOW);//turn LED off
+    if(input == 0000){
+      digitalWrite(LED_PIN, LOW);
     }
   }
-  mySerial.flush();//clear the serial buffer for unwanted inputs     
+  //clear the serial buffer for unwanted inputs
+  hc_srl.flush();
   
-  delay(20);//delay little for better serial communication
+  //delay little for better serial communication
+  delay(20);
  
 }
 
